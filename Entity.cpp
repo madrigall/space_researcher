@@ -82,6 +82,8 @@ Entity::~Entity()
 
 void Entity::draw(sf::RenderWindow *win)
 {
+	//std::cout << getX() << " " << getY() << "\n";
+
 	animation.getSprite().setPosition(getX(), getY());
 	animation.getSprite().setRotation(getAngle() + 90);
 

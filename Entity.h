@@ -7,14 +7,14 @@ class Entity
 	private:
 		bool live;
 		
-		float x = 0.0;
-		float y = 0.0;
+		float x;
+		float y;
 		
-		float dx = 0.0;
-		float dy = 0.0;
+		float dx;
+		float dy;
 		
-		float R = 0.0;
-		float angle = 0.0;
+		float R = 1.0;
+		float angle;
 
 		std::string name;
 		Animation animation;

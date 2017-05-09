@@ -18,6 +18,6 @@ class Animation
 
 		void update();
 		bool isEnd();
-		sf::Sprite getSprite();
+		sf::Sprite& getSprite();
 };
 

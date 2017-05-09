@@ -3,8 +3,8 @@
 
 Asteroid::Asteroid()
 {
-	setX((float)(rand() % 8 - 4.0));
-	setY((float)(rand() % 8 - 4.0));
+	setDx((float)(rand() % 8 - 4.0));
+	setDy((float)(rand() % 8 - 4.0));
 
 	setName("asteroid");
 }

@@ -38,9 +38,9 @@ bool Application::Start(sf::Sprite &background, std::map<std::string, Animation>
 	
 	Player *p = new Player(sf::VideoMode::getDesktopMode().width / 2.0f, sf::VideoMode::getDesktopMode().height / 2.0f, 20, 0, animations["player"]);
 
-	for (int i = 0; i<15; i++)
+	for (int i = 0; i < 15; i++)
 	{
-		Asteroid *a = new Asteroid(sf::VideoMode::getDesktopMode().width / 2.0f, sf::VideoMode::getDesktopMode().height / 2.0f, 20, 0, animations["asteroid_f"]);
+		Asteroid *a = new Asteroid(rand() % sf::VideoMode::getDesktopMode().width, rand() % sf::VideoMode::getDesktopMode().height, 360, 25, animations["asteroid_f"]);
 		entities.push_back(a);
 	}
 
@@ -62,22 +62,11 @@ bool Application::Start(sf::Sprite &background, std::map<std::string, Animation>
 							if (menu.isVisible())
 								menu.selectMenuUp();
 
-							p->setThrust(true);
 						break;
 
 						case sf::Keyboard::Down :
 							if (menu.isVisible())
 								menu.selectMenuDown();
-						break;
-
-						case sf::Keyboard::Right:
-							p->setAngle(p->getAngle() + 3);
-							
-						break;
-
-						case sf::Keyboard::Left :
-							p->setAngle(p->getAngle() - 3);
-	
 						break;
 
 						case sf::Keyboard::Return :
@@ -95,6 +84,21 @@ bool Application::Start(sf::Sprite &background, std::map<std::string, Animation>
 									window->close();
 								break;
 							}
+
+						break;
+					}
+				break;
+
+				case sf::Event::KeyPressed : 
+					switch (e.key.code)
+					{
+						case sf::Keyboard::Right:
+							p->setAngle(p->getAngle() + 3);
+
+						break;
+
+						case sf::Keyboard::Left:
+							p->setAngle(p->getAngle() - 3);
 
 						break;
 					}

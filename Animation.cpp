@@ -41,7 +41,7 @@ bool Animation::isEnd()
 	return (currentFrame + speed >= frames.size());
 }
 
-sf::Sprite Animation::getSprite()
+sf::Sprite& Animation::getSprite()
 {
 	return sprite;
 }

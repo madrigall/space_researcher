@@ -4,8 +4,8 @@
 #include <iostream>
 #include <list>
 
-#include "Menu.h"
 #include "Animation.h"
+#include "Menu.h"
 #include "Entity.h"
 #include "Player.h"
 #include "Asteroid.h"
