@@ -96,3 +96,18 @@ bool Menu::addMenuItem(std::string name)
 
 	return true;
 }
+
+bool Menu::isVisible()
+{
+	return visible;
+}
+
+void Menu::showMenu()
+{
+	visible = true;
+}
+
+void Menu::hideMenu()
+{
+	visible = false;
+}

@@ -1,7 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Menu.h"
+
 #include <iostream>
+#include <list>
+
+#include "Menu.h"
+#include "Animation.h"
+#include "Entity.h"
+#include "Player.h"
+#include "Asteroid.h"
+
 
 class Application
 {
@@ -12,6 +20,6 @@ class Application
 		Application();
 		~Application();
 		void createWindow(std::string title);
-		bool Start(sf::Sprite background);
+		bool Start(sf::Sprite &background, std::map<std::string, Animation>& animations);
 };
 

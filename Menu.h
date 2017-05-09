@@ -17,15 +17,25 @@ class Menu
 		sf::Font font;
 		sf::Text *menu;
 
+		bool visible = false;
+
 	public:
 		Menu(unsigned _w, unsigned _h, int n, sf::Color _color, sf::Color _activeColor);
 		~Menu();
 
 		void draw(sf::RenderWindow *window) const;
+
 		void selectMenuUp();
 		void selectMenuDown();
+
 		int getActiveMenu() const;
+
 		void setActiveMenu(int _a);
 		void setMenuAmount(int n);
+
 		bool addMenuItem(std::string name);
+		bool isVisible();
+
+		void showMenu();
+		void hideMenu();
 };

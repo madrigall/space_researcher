@@ -15,14 +15,16 @@ void Application::createWindow(std::string title)
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	
 	//window->create(sf::VideoMode(1280, 720), title);
-	window->create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), title, sf::Style::Fullscreen);
+	window->create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), title);//,sf::Style::Fullscreen);
 	window->setFramerateLimit(60);
 }
 
-bool Application::Start(sf::Sprite background)
+bool Application::Start(sf::Sprite &background, std::map<std::string, Animation>& animations)
 {
 	if (!window->isOpen())
 		return false;
+
+	std::list<Entity*> entities;
 
 	//sf::Color main(205, 118, 53);//(201, 68, 65);
 	//sf::Color active(241, 104, 157);//(196, 161, 50);
@@ -31,6 +33,19 @@ bool Application::Start(sf::Sprite background)
 	
 	menu.addMenuItem("New game");
 	menu.addMenuItem("Exit");
+
+	menu.showMenu();
+	
+	Player *p = new Player(sf::VideoMode::getDesktopMode().width / 2.0f, sf::VideoMode::getDesktopMode().height / 2.0f, 20, 0, animations["player"]);
+
+	for (int i = 0; i<15; i++)
+	{
+		Asteroid *a = new Asteroid(sf::VideoMode::getDesktopMode().width / 2.0f, sf::VideoMode::getDesktopMode().height / 2.0f, 20, 0, animations["asteroid_f"]);
+		entities.push_back(a);
+	}
+
+
+	entities.push_back(p);
 
 	while (window->isOpen())
 	{
@@ -44,11 +59,25 @@ bool Application::Start(sf::Sprite background)
 					switch (e.key.code)
 					{
 						case sf::Keyboard::Up :
-							menu.selectMenuUp();
+							if (menu.isVisible())
+								menu.selectMenuUp();
+
+							p->setThrust(true);
 						break;
 
 						case sf::Keyboard::Down :
-							menu.selectMenuDown();
+							if (menu.isVisible())
+								menu.selectMenuDown();
+						break;
+
+						case sf::Keyboard::Right:
+							p->setAngle(p->getAngle() + 3);
+							
+						break;
+
+						case sf::Keyboard::Left :
+							p->setAngle(p->getAngle() - 3);
+	
 						break;
 
 						case sf::Keyboard::Return :
@@ -56,6 +85,10 @@ bool Application::Start(sf::Sprite background)
 							{
 								case 0 :
 									std::cout << "Play button has been pressed" << std::endl;
+									
+									if(menu.isVisible())
+										menu.hideMenu();
+															
 								break;
 
 								case 1 :
@@ -73,11 +106,31 @@ bool Application::Start(sf::Sprite background)
 			}
 		}
 
-		window->clear();
-
 		window->draw(background);
-		menu.draw(window);
+		
+		if(menu.isVisible())
+			menu.draw(window);
 
+
+		for (auto i : entities)
+			i->draw(window);
+
+		for (auto i = entities.begin(); i != entities.end();)
+		{
+			Entity *e = *i;
+
+			e->update(window->getSize().x, window->getSize().y);
+			e->getAnimation().update();
+
+			if (!e->isLive()) 
+			{ 
+				i = entities.erase(i);
+				delete e; 
+			}
+			else 
+				i++;
+		}
+		
 		window->display();
 	}
 
