@@ -5,13 +5,12 @@ Entity::Entity()
 	live = true;
 }
 
-Entity::Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation& a)
+Entity::Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation a)
 {
+	live = true;
+
 	x = _x;
 	y = _y;
-
-	//dx = _dx;
-	//dy = _dy;
 
 	R = _R;
 	angle = _angle;
@@ -25,19 +24,31 @@ void Entity::setName(std::string _name)
 	name = _name;
 }
 
-void Entity::setAnimation(Animation & a)
+void Entity::setAnimation(Animation a)
 {
 	animation = a;
 }
 
-Animation Entity::getAnimation() const
+Animation* Entity::getAnimation()
 {
-	return animation;
+	return &animation;
+}
+
+bool Entity::isCollided(Entity * e_f, Entity * e_s)
+{
+	return	(e_s->getX() - e_f->getX())*(e_s->getX() - e_f->getX()) +
+			(e_s->getY() - e_f->getY())*(e_s->getY() - e_f->getY())<
+			(e_f->getR() + e_s->getR())*(e_f->getR() + e_s->getR());
 }
 
 bool Entity::isLive() const
 {
 	return live;
+}
+
+bool Entity::getRotationMoving() const
+{
+	return rotation_moving;
 }
 
 float Entity::getX() const
@@ -82,23 +93,22 @@ Entity::~Entity()
 
 void Entity::draw(sf::RenderWindow *win)
 {
-	//std::cout << getX() << " " << getY() << "\n";
-
 	animation.getSprite().setPosition(getX(), getY());
-	animation.getSprite().setRotation(getAngle() + 90);
+
+	if(getRotationMoving())
+		animation.getSprite().setRotation(getAngle());
 
 	win->draw(animation.getSprite());
-
-	/*sf::CircleShape circle(R);
-	circle.setFillColor(sf::Color(255, 0, 0, 170));
-	circle.setPosition(x, y);
-	circle.setOrigin(R, R);
-	win->draw(circle);*/
 }
 
 void Entity::setLive(bool _live)
 {
 	live = _live;
+}
+
+void Entity::setRotationMoving(bool _rot)
+{
+	rotation_moving = _rot;
 }
 
 void Entity::setX(float _x)

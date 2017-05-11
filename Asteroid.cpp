@@ -3,24 +3,29 @@
 
 Asteroid::Asteroid()
 {
-	setDx((float)(rand() % 8 - 4.0));
-	setDy((float)(rand() % 8 - 4.0));
-
-	setName("asteroid");
+	
 }
 
-Asteroid::Asteroid(float _x, float _y, float _R, float _angle, Animation & a)
+Asteroid::Asteroid(float _x, float _y, float _R, float _angle, Animation& a)
 {
-	setX(_x);// = _x;
-	setY(_y);
+	setDx((float)((rand() % 3) + 1.0));
+	setDy((float)((rand() % 3) + 1.0));
 
-	//dx = _dx;
-	//dy = _dy;
+	if (!getDy())
+		setDy(1);
+
+	if (!getDx())
+		setDx(1);
+
+	setName("asteroid");
+
+	setX(_x);
+	setY(_y);
 
 	setR(_R);
 	setAngle(_angle);
 
-	setAnimation(a);
+	setAnimation(a);	
 }
 
 Asteroid::~Asteroid()
@@ -34,14 +39,26 @@ void Asteroid::update(float _w, float _h)
 	setY(getY() + getDy());
 
 	if (getX() > _w)
-		setX(0);
-
-	if (getX() < 0)
+	{
+		setDx(-getDx());
 		setX(_w);
+	}
+		
+	if (getX() < 0)
+	{
+		setDx(-getDx());
+		setX(0);
+	}
+		
 
 	if (getY() > _h)
+	{
 		setY(0);
+	}
 
 	if (getY() < 0)
-		setY(_h);
+	{
+		setDy(-getDy());
+		setY(0);
+	}
 }

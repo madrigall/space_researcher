@@ -3,7 +3,8 @@
 
 class Player : public Entity
 {
-	bool thrust;
+	bool move;
+	float maxSpeed;
 
 	public:
 		Player();
@@ -11,7 +12,10 @@ class Player : public Entity
 		~Player();
 
 		void update(float w, float h);
-		bool getThrust();
-		void setThrust(bool t);
+		bool getMove();
+		void setMove(bool t);
+
+		float getSpeed();
+		void setSpeed(float s);
 };
 

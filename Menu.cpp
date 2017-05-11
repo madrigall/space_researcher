@@ -1,5 +1,9 @@
 #include "Menu.h"
 
+Menu::Menu()
+{
+}
+
 Menu::Menu(unsigned _w, unsigned _h, int n, sf::Color _color, sf::Color _activeColor)
 {
 	setMenuAmount(n);
@@ -48,6 +52,23 @@ void Menu::selectMenuDown()
 		menu[activeMenu].setFillColor(mainColor);
 		activeMenu++;
 		menu[activeMenu].setFillColor(activeColor);
+	}
+}
+
+void Menu::setData(unsigned _w, unsigned _h, int n, sf::Color _color, sf::Color _activeColor)
+{
+	setMenuAmount(n);
+	width = _w;
+	height = _h;
+
+	mainColor = _color;
+	activeColor = _activeColor;
+
+	menu = new sf::Text[menuAmount];
+
+	if (!font.loadFromFile("OpenSans.ttf"))
+	{
+		std::cout << "Font didn't load!" << std::endl;
 	}
 }
 

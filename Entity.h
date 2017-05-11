@@ -6,6 +6,7 @@ class Entity
 {
 	private:
 		bool live;
+		bool rotation_moving;
 		
 		float x;
 		float y;
@@ -21,13 +22,14 @@ class Entity
 
 	public:
 		Entity();
-		Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation& a);
+		Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation a);
 		virtual ~Entity();
 
 		void draw(sf::RenderWindow *win);
 		virtual void update(float w, float h) = 0;
 	
 		void setLive(bool _live);
+		void setRotationMoving(bool _rot);
 		void setX(float _x);
 		void setY(float _y);
 		void setDx(float _dx);
@@ -35,9 +37,10 @@ class Entity
 		void setR(float _R);
 		void setAngle(float _angle);
 		void setName(std::string _name);
-		void setAnimation(Animation& a);
+		void setAnimation(Animation a);
 
 		bool isLive() const;
+		bool getRotationMoving() const;
 		float getX() const;
 		float getY() const;
 		float getDx() const;
@@ -45,7 +48,9 @@ class Entity
 		float getR() const;
 		float getAngle() const;
 		std::string getName() const;
-		Animation getAnimation() const;
+		Animation* getAnimation();
+
+		static bool isCollided(Entity* e_f, Entity* e_s);
 
 };
 

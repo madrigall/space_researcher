@@ -20,6 +20,7 @@ class Menu
 		bool visible = false;
 
 	public:
+		Menu();
 		Menu(unsigned _w, unsigned _h, int n, sf::Color _color, sf::Color _activeColor);
 		~Menu();
 
@@ -27,6 +28,7 @@ class Menu
 
 		void selectMenuUp();
 		void selectMenuDown();
+		void setData(unsigned _w, unsigned _h, int n, sf::Color _color, sf::Color _activeColor);
 
 		int getActiveMenu() const;
 

@@ -2,16 +2,16 @@
 
 Player::Player()
 {
-	setName("player");
+	
 }
 
 Player::Player(float _x, float _y, float _R, float _angle, Animation & a)
 {
+	setRotationMoving(false);
+	setName("player");
+
 	setX(_x);// = _x;
 	setY(_y);
-
-	//dx = _dx;
-	//dy = _dy;
 
 	setR(_R);
 	setAngle(_angle);
@@ -28,49 +28,47 @@ void Player::update(float w, float h)
 {
 	float DEGTORAD = 0.017453f;
 
-	if (thrust)
-	{
-		setDx(getDx() + cos(getAngle()*DEGTORAD)*0.2);
-		setDy(getDy() + sin(getAngle()*DEGTORAD)*0.2);
-	}
+	if (getMove())
+		setDx((float)(getDx() + sin(getAngle()*DEGTORAD)*0.2));
 	else
-	{
-		setDx(getDx() * 0.99);
-		setDy(getDy() * 0.99);
-	}
-
-	int maxSpeed = 10;
-
-	float speed = sqrt(pow(getDx(), 2) + pow(getDy(), 2));
+		setDx((float)(getDx() * 0.8));
+	
+	float speed = sqrt(pow(getDx(), 2));
 
 	if (speed > maxSpeed)
-	{
 		setDx(getDx() * maxSpeed / speed);
-		setDy(getDy() * maxSpeed / speed);
-	}
 
 	setX(getX() + getDx());
-	setY(getY() + getDy());
 
-	if (getX() > w)
-		setX(0);
+	if (getX() + 10 > w)
+		setX(w - 10);
 
-	if (getX() < 0)
-		setX(w);
+	if (getX() - 10 < 0)
+		setX(10);
 
 	if (getY() > h)
-		setY(0);
+		setY(h);
 
 	if (getY() < 0)
-		setY(h);
+		setY(0);
 }
 
-bool Player::getThrust()
+bool Player::getMove()
 {
-	return thrust;
+	return move;
 }
 
-void Player::setThrust(bool t)
+void Player::setMove(bool t)
 {
-	thrust = t;
+	move = t;
+}
+
+float Player::getSpeed()
+{
+	return maxSpeed;
+}
+
+void Player::setSpeed(float s)
+{
+	maxSpeed = s;
 }
