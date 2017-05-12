@@ -58,20 +58,33 @@ void Application::gameLoop()
 
 		case gameStates::starting_game:
 			menu.hideMenu();
-			if(last_state == gameStates::loosed)
+			if (last_state == gameStates::loosed)
+			{
+				removeAsteroidsAndExplosions();
 				createPreloadEntities();
+			}
 			
 			setGameState(gameStates::playing);
 			break;
 
 		case gameStates::playing:
 			drawAllEntities();
-			randomSpawnEntities(500);
+			randomSpawnEntities(200);
 			break;
 
 		case gameStates::loosed:
-			removeAsteroidsAndExplosions();
 			showStartScreen();
+			for (auto e : entities)
+			{
+				if (e->getName() == "explosion")
+				{
+					if (e->getAnimation()->isEnd())
+					{
+						e->setLive(false);
+						continue;
+					}
+				}
+			}
 			break;
 
 		case gameStates::exiting:
@@ -86,8 +99,6 @@ void Application::gameLoop()
 	handleEvents(sf::Event());
 	handleEntitiesActions();
 	updateEntities();
-
-
 }
 
 void Application::createPreloadEntities()
@@ -227,7 +238,7 @@ void Application::showStartScreen()
 	menu.draw(window);
 
 	for (auto i : entities)
-		if (i->getName() == "asteroid")
+		if (i->getName() == "asteroid" || i->getName() == "explosion")
 			i->draw(window);
 }
 
@@ -260,11 +271,11 @@ void Application::handleEntitiesActions()
 						getPlayer()->setY(window->getSize().y - 40.0);
 						getPlayer()->setR(20);
 						getPlayer()->setAngle(0);
-						getPlayer()->setAnimation(animations["player"]);
 						getPlayer()->setDx(0);
 						getPlayer()->setDy(0);
 
 						setGameState(gameStates::loosed);
+						
 					}
 			}
 }
