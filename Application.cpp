@@ -60,6 +60,7 @@ void Application::gameLoop()
 			menu.hideMenu();
 			if (last_state == gameStates::loosed)
 			{
+				respawnPlayer();
 				removeAsteroidsAndExplosions();
 				createPreloadEntities();
 			}
@@ -73,17 +74,15 @@ void Application::gameLoop()
 			break;
 
 		case gameStates::loosed:
-			showStartScreen();
-			for (auto e : entities)
-			{
-				if (e->getName() == "explosion")
-				{
-					if (e->getAnimation()->isEnd())
-					{
-						e->setLive(false);
-						continue;
-					}
-				}
+			{	
+				handleEntitiesActionsAfterLose();
+				showStartScreen();
+
+				Informer gameOver(window->getSize().x / 2.0f, 150, "OpenSans.ttf", "Game Over", sf::Color(247, 203, 27));
+				
+				gameOver.setFontSize(64);
+				gameOver.show(true);
+				gameOver.draw(window);
 			}
 			break;
 
@@ -235,11 +234,12 @@ void Application::drawAllEntities()
 void Application::showStartScreen()
 {
 	menu.showMenu();
-	menu.draw(window);
-
+	
 	for (auto i : entities)
 		if (i->getName() == "asteroid" || i->getName() == "explosion")
 			i->draw(window);
+	
+	menu.draw(window);
 }
 
 void Application::handleEntitiesActions()
@@ -262,18 +262,10 @@ void Application::handleEntitiesActions()
 				if (e_f->getName() == "player" && e_s->getName() == "asteroid")
 					if (Entity::isCollided(e_f, e_s))
 					{
+						e_f->setLive(false);
 						e_s->setLive(false);
 
 						entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_ship"]));
-
-						getPlayer()->setAnimation(animations["player"]);
-						getPlayer()->setX(window->getSize().x / 2.0f);
-						getPlayer()->setY(window->getSize().y - 40.0);
-						getPlayer()->setR(20);
-						getPlayer()->setAngle(0);
-						getPlayer()->setDx(0);
-						getPlayer()->setDy(0);
-
 						setGameState(gameStates::loosed);
 						
 					}
@@ -292,7 +284,8 @@ void Application::updateEntities()
 		if (!e->isLive())
 		{
 			i = entities.erase(i);
-			delete e;
+			if(e->getName() != "player")
+				delete e;
 		}
 		else
 			i++;
@@ -319,6 +312,36 @@ void Application::setGameState(gameStates s)
 {
 	last_state = state;
 	state = s;
+}
+
+void Application::handleEntitiesActionsAfterLose()
+{
+	for (auto e : entities)
+	{
+		if (e->getName() == "explosion")
+		{
+			if (e->getAnimation()->isEnd())
+			{
+				e->setLive(false);
+				continue;
+			}
+		}
+	}
+}
+
+void Application::respawnPlayer()
+{
+	getPlayer()->setLive(true);
+
+	getPlayer()->setAnimation(animations["player"]);
+	getPlayer()->setX(window->getSize().x / 2.0f);
+	getPlayer()->setY(window->getSize().y - 40.0);
+	getPlayer()->setR(20);
+	getPlayer()->setAngle(0);
+	getPlayer()->setDx(0);
+	getPlayer()->setDy(0);
+
+	entities.push_back(getPlayer());
 }
 
 

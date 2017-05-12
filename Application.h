@@ -11,7 +11,7 @@
 #include "Asteroid.h"
 #include "Bullet.h"
 #include "Explosion.h"
-
+#include "Informer.h"
 
 class Application
 {
@@ -52,7 +52,10 @@ class Application
 		void removeAllEntities();
 		void removeAsteroidsAndExplosions();
 		void setGameState(gameStates s);
+		void handleEntitiesActionsAfterLose();
 
+		void respawnPlayer();
+		
 		gameStates getGameStates() const;
 		Player* getPlayer() const;
 };

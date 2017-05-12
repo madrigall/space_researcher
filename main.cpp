@@ -53,7 +53,7 @@ int main()
 	animations["bullet"]			= a_bullet;
 
 	Application app(animations);
-	app.createWindow("Space resorcher");
+	app.createWindow("Space researcher");
 	app.Start(s_background);
 
 	return 0;
