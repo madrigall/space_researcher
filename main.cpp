@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+
 #include "Application.h"
 #include <map>
 #include <time.h>
@@ -11,7 +12,7 @@ int main()
 
 	std::map<std::string, Animation> animations;
 
-	Texture t_background, t_player, t_explosion_f, t_explosion_s, t_asteroid_f, t_asteroid_s, t_bullet;
+	Texture t_background, t_player, t_explosion_f, t_explosion_s, t_asteroid_f, t_asteroid_s, t_bullet, t_present;
 
 	t_background.loadFromFile("images/background.jpg");
 	t_background.setSmooth(true);
@@ -28,6 +29,9 @@ int main()
 
 	t_bullet.loadFromFile("images/fire_blue.png");
 
+	t_present.loadFromFile("images/present_small.png");
+	t_present.setSmooth(true);
+
 	Sprite s_background;
 	s_background.setTexture(t_background);
 
@@ -35,13 +39,15 @@ int main()
 	Animation a_player_move_l(t_player, 0, 40, 40, 40, 1, 0.2);
 	Animation a_player_move_r(t_player, 80, 40, 40, 40, 1, 0.2);
 
-	Animation a_explosion_f(t_explosion_f, 0, 0, 256, 256, 48, 0.2);
-	Animation a_explosion_ship(t_explosion_s, 0, 0, 192, 192, 64, 0.2);
+	Animation a_explosion_f(t_explosion_f, 0, 0, 256, 256, 48, 0.5);
+	Animation a_explosion_ship(t_explosion_s, 0, 0, 192, 192, 64, 0.5);
 
-	Animation a_asteroid_f(t_asteroid_f, 0, 0, 64, 64, 16, 0.02);
-	Animation a_asteroid_s(t_asteroid_s, 0, 0, 64, 64, 16, 0.02);
+	Animation a_asteroid_f(t_asteroid_f, 0, 0, 64, 64, 16, 0.09);
+	Animation a_asteroid_s(t_asteroid_s, 0, 0, 64, 64, 16, 0.09);
 
 	Animation a_bullet(t_bullet, 0, 0, 32, 64, 16, 0.5);
+
+	Animation a_present(t_present, 0, 0, 40, 40, 1, 0.05);
 
 	animations["player"]			= a_player;
 	animations["player_move_l"]		= a_player_move_l;
@@ -51,6 +57,7 @@ int main()
 	animations["asteroid_f"]		= a_asteroid_f;
 	animations["asteroid_s"]		= a_asteroid_s;
 	animations["bullet"]			= a_bullet;
+	animations["present"]			= a_present;
 
 	Application app(animations);
 	app.createWindow("Space researcher");
