@@ -16,8 +16,8 @@ void Application::createWindow(std::string title)
 {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	
-	window->create(sf::VideoMode(1280, 720), title);
-	//window->create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), title);//,sf::Style::Fullscreen);
+	//window->create(sf::VideoMode(1280, 720), title);
+	window->create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), title, sf::Style::Fullscreen);
 	window->setFramerateLimit(60);
 }
 
@@ -69,8 +69,11 @@ void Application::gameLoop()
 			break;
 
 		case gameStates::playing:
-			drawAllEntities();
-			randomSpawnEntities(200);
+			{
+				drawAllEntities();
+				randomSpawnPresents(4000);
+				randomSpawnEntities(200);
+			}
 			break;
 
 		case gameStates::loosed:
@@ -83,6 +86,11 @@ void Application::gameLoop()
 				gameOver.setFontSize(64);
 				gameOver.show(true);
 				gameOver.draw(window);
+
+				Informer score(window->getSize().x / 2.0f, 220, "OpenSans.ttf", "Your score: 500", sf::Color(247, 203, 27));
+				score.setFontSize(32);
+				score.show(true);
+				score.draw(window);
 			}
 			break;
 
@@ -102,7 +110,7 @@ void Application::gameLoop()
 
 void Application::createPreloadEntities()
 {
-	for (int i = 0; i < rand() % 1 + 5; ++i)
+	for (int i = 0; i < rand() % 15 + 5; ++i)
 	{
 		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
 		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, animations["asteroid_s"]));
@@ -129,8 +137,41 @@ void Application::handleEvents(sf::Event e)
 					case sf::Keyboard::Space:
 						if (getGameStates() == gameStates::playing)
 						{
-							entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
 							isSpace = true;
+
+							switch (getPlayer()->getPower())
+							{
+								case 1:
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+									break;
+								case 2:
+									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									break;
+								case 3:
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+									break;
+								case 4:
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+									break;
+								case 5:
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -45, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, -30, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 45, animations["bullet"]));
+									break;
+
+								default:
+									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+								break;
+							}
+							
 						}
 						break;
 
@@ -190,10 +231,13 @@ void Application::handleEvents(sf::Event e)
 						break;
 
 						default:
-							getPlayer()->setAnimation(animations["player"]);
-							getPlayer()->setAngle(0);
-							getPlayer()->setMove(false);
-							isSpace = false;
+							{
+								isSpace = false;
+
+								getPlayer()->setAnimation(animations["player"]);
+								getPlayer()->setAngle(0);
+								getPlayer()->setMove(false);
+							}
 							break;
 				}
 				break;
@@ -205,9 +249,9 @@ void Application::handleEvents(sf::Event e)
 
 		if (getPlayer()->getMove() && (e.type != sf::Event::KeyPressed) && (e.key.code != sf::Keyboard::Right || e.key.code != sf::Keyboard::Left) && !isSpace)
 		{
+			getPlayer()->setMove(false);
 			getPlayer()->setAnimation(animations["player"]);
 			getPlayer()->setAngle(0);
-			getPlayer()->setMove(false);
 		}
 	}
 }
@@ -251,6 +295,7 @@ void Application::handleEntitiesActions()
 		for (auto e_s : entities)
 			{
 				if (e_f->getName() == "asteroid" && e_s->getName() == "bullet")
+				{
 					if (Entity::isCollided(e_f, e_s))
 					{
 						e_f->setLive(false);
@@ -258,17 +303,29 @@ void Application::handleEntitiesActions()
 
 						entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_f"]));
 					}
-
-				if (e_f->getName() == "player" && e_s->getName() == "asteroid")
-					if (Entity::isCollided(e_f, e_s))
+				}
+				else
+					if (e_f->getName() == "player" && e_s->getName() == "asteroid")
 					{
-						e_f->setLive(false);
-						e_s->setLive(false);
+						if (Entity::isCollided(e_f, e_s))
+						{
+							e_f->setLive(false);
+							e_s->setLive(false);
 
-						entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_ship"]));
-						setGameState(gameStates::loosed);
-						
+							entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_ship"]));
+							setGameState(gameStates::loosed);
+
+						}
 					}
+					else
+						if (e_f->getName() == "player" && e_s->getName() == "present")
+						{
+							if (Entity::isCollided(e_f, e_s))
+							{
+								e_s->setLive(false);
+								getPlayer()->setPower(getPlayer()->getPower() + e_s->getBonus());
+							}
+						}
 			}
 }
 
@@ -349,8 +406,19 @@ void Application::randomSpawnEntities(int chance)
 {
 	if (!(rand() % chance))
 	{
-		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
-		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, animations["asteroid_s"]));
+		for (int i = 0; i < rand() % 30; ++i)
+		{
+			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
+			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, animations["asteroid_s"]));
+		}
+	}
+}
+
+void Application::randomSpawnPresents(int chance)
+{
+	if (!(rand() % chance))
+	{
+		entities.push_back(new Present(rand() % window->getSize().x + 25, 25, 40, 0, animations["present"]));
 	}
 }
 

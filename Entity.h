@@ -20,6 +20,8 @@ class Entity
 		std::string name;
 		Animation animation;
 
+		int bonus;
+
 	public:
 		Entity();
 		Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation a);
@@ -38,6 +40,7 @@ class Entity
 		void setAngle(float _angle);
 		void setName(std::string _name);
 		void setAnimation(Animation a);
+		void setBonus(int b);
 
 		bool isLive() const;
 		bool getRotationMoving() const;
@@ -47,6 +50,7 @@ class Entity
 		float getDy() const;
 		float getR() const;
 		float getAngle() const;
+		int getBonus() const;
 		std::string getName() const;
 		Animation* getAnimation();
 

@@ -29,6 +29,11 @@ void Entity::setAnimation(Animation a)
 	animation = a;
 }
 
+void Entity::setBonus(int b)
+{
+	bonus = b;
+}
+
 Animation* Entity::getAnimation()
 {
 	return &animation;
@@ -79,6 +84,11 @@ float Entity::getR() const
 float Entity::getAngle() const
 {
 	return angle;
+}
+
+int Entity::getBonus() const
+{
+	return bonus;
 }
 
 std::string Entity::getName() const

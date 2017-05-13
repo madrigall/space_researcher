@@ -12,6 +12,8 @@
 #include "Bullet.h"
 #include "Explosion.h"
 #include "Informer.h"
+#include "Present.h"
+
 
 class Application
 {
@@ -49,6 +51,7 @@ class Application
 		void handleEntitiesActions();
 		void updateEntities();
 		void randomSpawnEntities(int chance);
+		void randomSpawnPresents(int chance);
 		void removeAllEntities();
 		void removeAsteroidsAndExplosions();
 		void setGameState(gameStates s);
