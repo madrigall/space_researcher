@@ -9,7 +9,6 @@ Animation::~Animation()
 
 }
 
-
 Animation::Animation(sf::Texture & t, int x, int y, int w, int h, int count, float _speed)
 {
 	currentFrame = 0;
@@ -27,6 +26,7 @@ Animation::Animation(sf::Texture & t, int x, int y, int w, int h, int count, flo
 void Animation::update()
 {
 	currentFrame += speed;
+
 	int n = frames.size();
 
 	if (currentFrame >= n) 
