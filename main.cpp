@@ -47,7 +47,7 @@ int main()
 
 	Animation a_bullet(t_bullet, 0, 0, 32, 64, 16, 0.5);
 
-	Animation a_present(t_present, 0, 0, 40, 40, 1, 0.05);
+	Animation a_present(t_present, 0, 0, 64, 64, 1, 0);
 
 	animations["player"]			= a_player;
 	animations["player_move_l"]		= a_player_move_l;

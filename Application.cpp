@@ -4,6 +4,8 @@ Application::Application(std::map<std::string, Animation> &_animations)
 {
 	window = new sf::RenderWindow;
 	animations = _animations;
+	isSpace = false;
+	setScore(0);
 }
 
 Application::~Application() 
@@ -48,6 +50,19 @@ bool Application::Start(sf::Sprite &background)
 	return true;
 }
 
+int Application::getScore() const
+{
+	return score;
+}
+
+void Application::setScore(int s)
+{
+	if (s < 0)
+		score = 0;
+	else
+		score = s;
+}
+
 void Application::gameLoop()
 {
 	switch (getGameStates())
@@ -70,8 +85,14 @@ void Application::gameLoop()
 
 		case gameStates::playing:
 			{
+				Informer score(60, 20, "OpenSans.ttf", "Score: " + std::to_string(getScore()));
+				
+				score.setFontSize(25);
+				score.show(true);
+				score.draw(window);
+			
 				drawAllEntities();
-				randomSpawnPresents(4000);
+				randomSpawnPresents(1000);
 				randomSpawnEntities(200);
 			}
 			break;
@@ -87,7 +108,7 @@ void Application::gameLoop()
 				gameOver.show(true);
 				gameOver.draw(window);
 
-				Informer score(window->getSize().x / 2.0f, 220, "OpenSans.ttf", "Your score: 500", sf::Color(247, 203, 27));
+				Informer score(window->getSize().x / 2.0f, 225, "OpenSans.ttf", "Your score: " + std::to_string(getScore()), sf::Color(247, 203, 27));
 				score.setFontSize(32);
 				score.show(true);
 				score.draw(window);
@@ -110,10 +131,10 @@ void Application::gameLoop()
 
 void Application::createPreloadEntities()
 {
-	for (int i = 0; i < rand() % 15 + 5; ++i)
+	for (int i = 0; i < rand() % 10 + 5; ++i)
 	{
 		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
-		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, animations["asteroid_s"]));
+		entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90,rand() % 2 + 1 ,animations["asteroid_s"]));
 	}
 }
 
@@ -264,7 +285,7 @@ void Application::drawAllEntities()
 		{
 			if (e->getAnimation()->isEnd())
 			{
-				e->setLive(false);
+				e->setHealth(0);
 				continue;
 			}
 		}
@@ -298,10 +319,15 @@ void Application::handleEntitiesActions()
 				{
 					if (Entity::isCollided(e_f, e_s))
 					{
-						e_f->setLive(false);
-						e_s->setLive(false);
+						e_f->setHealth(e_f->getHealth() - getPlayer()->getDamage());
+						e_s->setHealth(0);
 
-						entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_f"]));
+						if (!e_f->isLive())
+						{
+							e_f->setHealth(0);
+							entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_f"]));
+							setScore(getScore() + 1);
+						}
 					}
 				}
 				else
@@ -309,12 +335,11 @@ void Application::handleEntitiesActions()
 					{
 						if (Entity::isCollided(e_f, e_s))
 						{
-							e_f->setLive(false);
-							e_s->setLive(false);
+							e_f->setHealth(0);
+							e_s->setHealth(0);
 
 							entities.push_back(new Explosion(e_f->getX(), e_f->getY(), 1, 0, animations["explosion_ship"]));
 							setGameState(gameStates::loosed);
-
 						}
 					}
 					else
@@ -322,8 +347,9 @@ void Application::handleEntitiesActions()
 						{
 							if (Entity::isCollided(e_f, e_s))
 							{
-								e_s->setLive(false);
+								e_s->setHealth(0);
 								getPlayer()->setPower(getPlayer()->getPower() + e_s->getBonus());
+								getPlayer()->setDamage(getPlayer()->getPower());
 							}
 						}
 			}
@@ -379,7 +405,7 @@ void Application::handleEntitiesActionsAfterLose()
 		{
 			if (e->getAnimation()->isEnd())
 			{
-				e->setLive(false);
+				e->setHealth(0);
 				continue;
 			}
 		}
@@ -388,7 +414,7 @@ void Application::handleEntitiesActionsAfterLose()
 
 void Application::respawnPlayer()
 {
-	getPlayer()->setLive(true);
+	getPlayer()->setHealth(1);
 
 	getPlayer()->setAnimation(animations["player"]);
 	getPlayer()->setX(window->getSize().x / 2.0f);
@@ -406,10 +432,10 @@ void Application::randomSpawnEntities(int chance)
 {
 	if (!(rand() % chance))
 	{
-		for (int i = 0; i < rand() % 30; ++i)
+		for (int i = 0; i < rand() % 3; ++i)
 		{
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
-			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, animations["asteroid_s"]));
+			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, rand() % 2 + 1, animations["asteroid_s"]));
 		}
 	}
 }

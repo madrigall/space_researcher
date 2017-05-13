@@ -30,5 +30,5 @@ void Bullet::update(float w, float h)
 	setX(getX() + getDx());
 
 	if (getX() > w || getX() < 0 || getY() > h || getY() < 0)
-		setLive(false);
+		setHealth(0);
 }

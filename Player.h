@@ -12,12 +12,14 @@ class Player : public Entity
 		~Player();
 
 		void update(float w, float h);
-		bool getMove();
+
+		void setSpeed(float s);
 		void setMove(bool t);
-		int getPower() const;
 		void setPower(int p);
 
+		bool getMove();
+		int getPower() const;
 		float getSpeed();
-		void setSpeed(float s);
+		
 };
 

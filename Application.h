@@ -26,21 +26,30 @@ class Application
 			exiting
 		};
 
+		bool isSpace;
+		int score;
+
 		sf::RenderWindow *window = NULL;
 		std::list<Entity*> entities;
+		
 		Player *player;
+		
 		std::map<std::string, Animation> animations;
+		
 		gameStates state;
 		gameStates last_state;
-		Menu menu;
 
-		bool isSpace = false;
+		Menu menu;
 
 	public:
 		Application(std::map<std::string, Animation> &_animations);
 		~Application();
+
 		void createWindow(std::string title);
 		bool Start(sf::Sprite &background);
+
+		int getScore() const;
+		void setScore(int s);
 
 		void gameLoop();
 		void createPreloadEntities();

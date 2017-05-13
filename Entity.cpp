@@ -2,12 +2,14 @@
 
 Entity::Entity()
 {
-	live = true;
+	setHealth(1);
+	setDamage(1);
 }
 
-Entity::Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation a)
+Entity::Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation& a)
 {
-	live = true;
+	setHealth(1);
+	setDamage(1);
 
 	x = _x;
 	y = _y;
@@ -24,7 +26,7 @@ void Entity::setName(std::string _name)
 	name = _name;
 }
 
-void Entity::setAnimation(Animation a)
+void Entity::setAnimation(Animation& a)
 {
 	animation = a;
 }
@@ -48,12 +50,22 @@ bool Entity::isCollided(Entity * e_f, Entity * e_s)
 
 bool Entity::isLive() const
 {
-	return live;
+	return getHealth() > 0;
 }
 
 bool Entity::getRotationMoving() const
 {
 	return rotation_moving;
+}
+
+int Entity::getHealth() const
+{
+	return health;
+}
+
+int Entity::getDamage() const
+{
+	return damage;
 }
 
 float Entity::getX() const
@@ -111,9 +123,17 @@ void Entity::draw(sf::RenderWindow *win)
 	win->draw(animation.getSprite());
 }
 
-void Entity::setLive(bool _live)
+void Entity::setHealth(int h)
 {
-	live = _live;
+	if (h < 0)
+		health = 0;
+	else
+		health = h;
+}
+
+void Entity::setDamage(int d)
+{
+	damage = d;
 }
 
 void Entity::setRotationMoving(bool _rot)

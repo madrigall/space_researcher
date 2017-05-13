@@ -1,14 +1,13 @@
 #include "Player.h"
 
-
 Player::Player(float _x, float _y, float _R, float _angle, Animation & a)
 {
 	setPower(1);
-
+	
 	setRotationMoving(false);
 	setName("player");
 
-	setX(_x);// = _x;
+	setX(_x);
 	setY(_y);
 
 	setR(_R);

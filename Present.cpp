@@ -4,7 +4,7 @@
 
 Present::Present(float _x, float _y, float _R, float _angle, Animation& a)
 {
-	setBonus(rand() % 2 - 1);
+	setBonus(rand() % 3 - 1);
 	setName("present");
 
 	setX(_x);
@@ -24,12 +24,12 @@ Present::~Present()
 
 void Present::update(float w, float h)
 {
-	setDy(getDy() + 0.05);
+	setDy(getDy() + 0.04);
 
 	setY(getY() + getDy());
 
 	if (getX() > w || getX() < 0 || getY() > h || getY() < 0)
-		setLive(false);
+		setHealth(0);
 }
 
 int Present::getPresent() const

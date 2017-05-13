@@ -5,7 +5,9 @@
 class Entity
 {
 	private:
-		bool live;
+		int health;
+		int damage;
+
 		bool rotation_moving;
 		
 		float x;
@@ -24,13 +26,14 @@ class Entity
 
 	public:
 		Entity();
-		Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation a);
+		Entity(float _x, float _y, float _R, float _angle, std::string _name, Animation &a);
 		virtual ~Entity();
 
 		void draw(sf::RenderWindow *win);
 		virtual void update(float w, float h) = 0;
 	
-		void setLive(bool _live);
+		void setHealth(int h);
+		void setDamage(int d);
 		void setRotationMoving(bool _rot);
 		void setX(float _x);
 		void setY(float _y);
@@ -39,11 +42,13 @@ class Entity
 		void setR(float _R);
 		void setAngle(float _angle);
 		void setName(std::string _name);
-		void setAnimation(Animation a);
+		void setAnimation(Animation &a);
 		void setBonus(int b);
 
 		bool isLive() const;
 		bool getRotationMoving() const;
+		int getHealth() const;
+		int getDamage() const;
 		float getX() const;
 		float getY() const;
 		float getDx() const;
