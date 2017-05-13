@@ -1,12 +1,10 @@
 #include "Player.h"
 
-Player::Player()
-{
-	
-}
 
 Player::Player(float _x, float _y, float _R, float _angle, Animation & a)
 {
+	setPower(1);
+
 	setRotationMoving(false);
 	setName("player");
 
@@ -31,7 +29,7 @@ void Player::update(float w, float h)
 	if (getMove())
 		setDx((float)(getDx() + sin(getAngle()*DEGTORAD)*0.2));
 	else
-		setDx((float)(getDx() * 0.8));
+		setDx((float)(getDx() * 0.5));
 	
 	float speed = sqrt(pow(getDx(), 2));
 
@@ -61,6 +59,22 @@ bool Player::getMove()
 void Player::setMove(bool t)
 {
 	move = t;
+}
+
+int Player::getPower() const
+{
+	return power;
+}
+
+void Player::setPower(int p)
+{
+	if (p <= 0)
+		power = 1;
+	else
+		if (p > 5)
+			power = 5;
+		else
+			power = p;
 }
 
 float Player::getSpeed()
