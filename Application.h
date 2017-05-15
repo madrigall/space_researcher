@@ -41,6 +41,11 @@ class Application
 
 		Menu menu;
 
+		sf::Clock cd;
+		sf::Clock c_lag;
+
+		double lag;
+
 	public:
 		Application(std::map<std::string, Animation> &_animations);
 		~Application();
@@ -62,7 +67,7 @@ class Application
 		void randomSpawnEntities(int chance);
 		void randomSpawnPresents(int chance);
 		void removeAllEntities();
-		void removeAsteroidsAndExplosions();
+		void removeAsteroidsExplosionsPresents();
 		void setGameState(gameStates s);
 		void handleEntitiesActionsAfterLose();
 

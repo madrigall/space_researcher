@@ -6,6 +6,8 @@ Application::Application(std::map<std::string, Animation> &_animations)
 	animations = _animations;
 	isSpace = false;
 	setScore(0);
+
+	lag = 0.0;
 }
 
 Application::~Application() 
@@ -21,6 +23,7 @@ void Application::createWindow(std::string title)
 	//window->create(sf::VideoMode(1280, 720), title);
 	window->create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), title, sf::Style::Fullscreen);
 	window->setFramerateLimit(60);
+	window->setVerticalSyncEnabled(true);
 }
 
 bool Application::Start(sf::Sprite &background)
@@ -35,10 +38,9 @@ bool Application::Start(sf::Sprite &background)
 	menu.addMenuItem("Exit");
 		
 	bool isSpace = false;
+
 	spawnPlayer();
 	createPreloadEntities();
-
-	state = gameStates::start_screen;
 
 	while (window->isOpen())
 	{
@@ -76,7 +78,7 @@ void Application::gameLoop()
 			if (last_state == gameStates::loosed)
 			{
 				respawnPlayer();
-				removeAsteroidsAndExplosions();
+				removeAsteroidsExplosionsPresents();
 				createPreloadEntities();
 			}
 			
@@ -92,7 +94,7 @@ void Application::gameLoop()
 				score.draw(window);
 			
 				drawAllEntities();
-				randomSpawnPresents(1000);
+				randomSpawnPresents(200);
 				randomSpawnEntities(200);
 			}
 			break;
@@ -125,7 +127,16 @@ void Application::gameLoop()
 	}
 
 	handleEvents(sf::Event());
-	handleEntitiesActions();
+	lag += c_lag.getElapsedTime().asMilliseconds();
+
+	while (lag >= 150)
+	{
+		handleEntitiesActions();
+		lag -= 150;
+		c_lag.restart();
+
+	}
+	
 	updateEntities();
 }
 
@@ -159,39 +170,65 @@ void Application::handleEvents(sf::Event e)
 						if (getGameStates() == gameStates::playing)
 						{
 							isSpace = true;
-
+							sf::Time elapsed = cd.getElapsedTime();
+							
 							switch (getPlayer()->getPower())
 							{
 								case 1:
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+									if (elapsed.asMilliseconds() >= 200)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+										cd.restart();
+									}
 									break;
 								case 2:
-									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+									if (elapsed.asMilliseconds() >= 300)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										cd.restart();
+									}
 									break;
 								case 3:
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+									if (elapsed.asMilliseconds() >= 400)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+										cd.restart();
+									}
 									break;
 								case 4:
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+									if (elapsed.asMilliseconds() >= 500)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+										cd.restart();
+									}
 									break;
 								case 5:
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -45, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, -30, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 45, animations["bullet"]));
+									if (elapsed.asMilliseconds() >= 600)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -45, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, -30, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 45, animations["bullet"]));
+										cd.restart();
+									}
 									break;
 
 								default:
-									entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
-								break;
+									if (elapsed.asMilliseconds() >= 600)
+									{
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
+										cd.restart();
+									}
+									break;
 							}
+
 							
 						}
 						break;
@@ -375,13 +412,13 @@ void Application::updateEntities()
 	}
 }
 
-void Application::removeAsteroidsAndExplosions()
+void Application::removeAsteroidsExplosionsPresents()
 {
 	for (auto i = entities.begin(); i != entities.end();)
 	{
 		Entity *e = *i;
 
-		if (e->getName() == "asteroid" || e->getName() == "explosion")
+		if (e->getName() == "asteroid" || e->getName() == "explosion" || e->getName() == "present")
 		{
 			i = entities.erase(i);
 			delete e;
@@ -415,6 +452,7 @@ void Application::handleEntitiesActionsAfterLose()
 void Application::respawnPlayer()
 {
 	getPlayer()->setHealth(1);
+	getPlayer()->setPower(1);
 
 	getPlayer()->setAnimation(animations["player"]);
 	getPlayer()->setX(window->getSize().x / 2.0f);
@@ -432,7 +470,7 @@ void Application::randomSpawnEntities(int chance)
 {
 	if (!(rand() % chance))
 	{
-		for (int i = 0; i < rand() % 3; ++i)
+		for (int i = 0; i < rand() % 5; ++i)
 		{
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, rand() % 2 + 1, animations["asteroid_s"]));
