@@ -9,7 +9,7 @@ using namespace sf;
 int main()
 {
 	srand(time(0));
-
+	
 	std::map<std::string, Animation> animations;
 
 	Texture t_background, t_player, t_explosion_f, t_explosion_s, t_asteroid_f, t_asteroid_s, t_bullet, t_present;

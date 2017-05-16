@@ -31,6 +31,18 @@ bool Application::Start(sf::Sprite &background)
 	if (!window->isOpen())
 		return false;
 
+	sf::Music music;
+	if (!music.openFromFile("audio/audio.ogg"))
+	{
+		std::cout << "Music error" << std::endl;
+	}
+	else
+	{
+		music.setLoop(true);
+		music.setVolume(8.0);
+		music.play();
+	}
+
 	std::list<Entity*> entities;
 
 	menu.setData(window->getSize().x, window->getSize().y, 2, sf::Color(201, 68, 65), sf::Color(255, 255, 255));
@@ -94,7 +106,7 @@ void Application::gameLoop()
 				score.draw(window);
 			
 				drawAllEntities();
-				randomSpawnPresents(200);
+				randomSpawnPresents(4000);
 				randomSpawnEntities(200);
 			}
 			break;
@@ -470,7 +482,7 @@ void Application::randomSpawnEntities(int chance)
 {
 	if (!(rand() % chance))
 	{
-		for (int i = 0; i < rand() % 5; ++i)
+		for (int i = 0; i < rand() % 3; ++i)
 		{
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, rand() % 2 + 1, animations["asteroid_s"]));

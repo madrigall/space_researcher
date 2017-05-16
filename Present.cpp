@@ -4,7 +4,7 @@
 
 Present::Present(float _x, float _y, float _R, float _angle, Animation& a)
 {
-	setBonus(rand() % 3 - 1);
+	setBonus(1);
 	setName("present");
 
 	setX(_x);
