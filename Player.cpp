@@ -26,7 +26,7 @@ void Player::update(float w, float h)
 	float DEGTORAD = 0.017453f;
 
 	if (getMove())
-		setDx((float)(getDx() + sin(getAngle()*DEGTORAD)*0.2));
+		setDx((float)(getDx() + sin(getAngle()*DEGTORAD)*0.4));
 	else
 		setDx((float)(getDx() * 0.5));
 	

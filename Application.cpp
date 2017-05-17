@@ -89,6 +89,8 @@ void Application::gameLoop()
 			menu.hideMenu();
 			if (last_state == gameStates::loosed)
 			{
+				setScore(0);
+
 				respawnPlayer();
 				removeAsteroidsExplosionsPresents();
 				createPreloadEntities();
@@ -106,8 +108,8 @@ void Application::gameLoop()
 				score.draw(window);
 			
 				drawAllEntities();
-				randomSpawnPresents(4000);
-				randomSpawnEntities(200);
+				randomSpawnPresents(1000);
+				randomSpawnEntities(500);
 			}
 			break;
 
@@ -139,14 +141,15 @@ void Application::gameLoop()
 	}
 
 	handleEvents(sf::Event());
+
 	lag += c_lag.getElapsedTime().asMilliseconds();
 
 	while (lag >= 150)
 	{
 		handleEntitiesActions();
+
 		lag -= 150;
 		c_lag.restart();
-
 	}
 	
 	updateEntities();
@@ -224,8 +227,8 @@ void Application::handleEvents(sf::Event e)
 									if (elapsed.asMilliseconds() >= 600)
 									{
 										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -45, animations["bullet"]));
-										entities.push_back(new Bullet(getPlayer()->getX() - 15, getPlayer()->getY(), 1, -30, animations["bullet"]));
-										entities.push_back(new Bullet(getPlayer()->getX() + 15, getPlayer()->getY(), 1, 0, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, -30, animations["bullet"]));
+										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 0, animations["bullet"]));
 										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 30, animations["bullet"]));
 										entities.push_back(new Bullet(getPlayer()->getX(), getPlayer()->getY(), 1, 45, animations["bullet"]));
 										cd.restart();
@@ -482,7 +485,7 @@ void Application::randomSpawnEntities(int chance)
 {
 	if (!(rand() % chance))
 	{
-		for (int i = 0; i < rand() % 3; ++i)
+		for (int i = 0; i < rand() % 7; ++i)
 		{
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 25, animations["asteroid_f"]));
 			entities.push_back(new Asteroid(rand() % window->getSize().x + 25, 25, 40, 90, rand() % 2 + 1, animations["asteroid_s"]));
